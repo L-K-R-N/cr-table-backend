@@ -5,6 +5,9 @@ import routes from './routes';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import compression from 'compression';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import swaggerOptions from './swagger';
 
 const app = express();
 
@@ -25,6 +28,9 @@ app.use(limiter);
 app.use(compression());
 
 app.use('/api', routes);
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });

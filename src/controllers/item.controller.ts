@@ -3,7 +3,42 @@ const { validationResult } = require('express-validator');
 import { itemService } from '../services/item.service';
 
 /**
- * Контроллер для получения элементов (GET /api/items)
+ * @openapi
+ * /items:
+ *   get:
+ *     summary: Get paginated, searchable, sortable list of items
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [order, value]
+ *       - in: query
+ *         name: sortDir
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *     responses:
+ *       200:
+ *         description: Paginated items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GetItemsResponse'
  */
 export const getItems = (req: Request, res: Response): void => {
   const search = req.query.search?.toString() || '';
@@ -17,7 +52,27 @@ export const getItems = (req: Request, res: Response): void => {
 };
 
 /**
- * Контроллер для обновления флага selected (PATCH /api/items/selection)
+ * @openapi
+ * /items/selection:
+ *   patch:
+ *     summary: Update selection state of items
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SelectionPayload'
+ *     responses:
+ *       200:
+ *         description: Number of items updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 updated:
+ *                   type: integer
+ *                   example: 10
  */
 export const updateSelection = (req: Request, res: Response, next: NextFunction): void => {
   const errors = validationResult(req);
@@ -36,6 +91,29 @@ export const updateSelection = (req: Request, res: Response, next: NextFunction)
   }
 };
 
+/**
+ * @openapi
+ * /items/order:
+ *   patch:
+ *     summary: Update item order
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/OrderPayload'
+ *     responses:
+ *       200:
+ *         description: Number of items updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 updated:
+ *                   type: integer
+ *                   example: 10
+ */
 export const updateOrder = (req: Request, res: Response, next: NextFunction): void => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -53,11 +131,37 @@ export const updateOrder = (req: Request, res: Response, next: NextFunction): vo
   }
 };
 
+/**
+ * @openapi
+ * /items/state:
+ *   get:
+ *     summary: Get current selection and order state
+ *     responses:
+ *       200:
+ *         description: Current selection and order state
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StateResponse'
+ */
 export const getState = (_req: Request, res: Response): void => {
   const state = itemService.getState();
   res.status(200).json(state);
 };
 
+/**
+ * @openapi
+ * /items/state/reset:
+ *   post:
+ *     summary: Reset selection and order state to default
+ *     responses:
+ *       200:
+ *         description: Reset confirmation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ResetResponse'
+ */
 export const resetState = (_req: Request, res: Response): void => {
   itemService.resetState();
   res.status(200).json({ reset: true });
