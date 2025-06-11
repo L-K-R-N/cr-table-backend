@@ -1,8 +1,19 @@
 import { Router } from 'express';
-import { getItems } from '../controllers/item.controller';
+import { getItems, updateSelection } from '../controllers/item.controller';
+const { body } = require('express-validator');
 
 const router = Router();
 
 router.get('/', getItems);
+
+router.patch(
+  '/selection',
+  [
+    body('ids').isArray({ min: 1 }).withMessage('ids must be a non-empty array'),
+    body('ids.*').isInt({ min: 1 }).withMessage('each id must be an integer ≥ 1'),
+    body('selected').isBoolean().withMessage('selected must be a boolean'),
+  ],
+  updateSelection
+);
 
 export default router;

@@ -46,6 +46,28 @@ class ItemService {
       total,
     };
   }
+
+  /**
+   * Обновляет флаг selected для списка элементов
+   * @param ids — массив ID элементов
+   * @param selected — новое значение флага
+   * @returns количество обновлённых элементов
+   */
+  updateSelection(ids: number[], selected: boolean): number {
+    const items = itemStore.getItems();
+    let updatedCount = 0;
+
+    const updated = items.map((item) => {
+      if (ids.includes(item.id)) {
+        updatedCount++;
+        return { ...item, selected };
+      }
+      return item;
+    });
+
+    itemStore.setItems(updated);
+    return updatedCount;
+  }
 }
 
 export const itemService = new ItemService();
