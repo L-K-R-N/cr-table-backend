@@ -107,13 +107,26 @@ class ItemService {
   }
 
   resetState(): void {
+    // const items = itemStore.getItems();
+    // const resetItems: IItem[] = items.map((item) => ({
+    //   id: item.id,
+    //   value: item.value,
+    //   selected: false,
+    //   order: item.id,
+    // }));
+    // itemStore.setItems(resetItems);
+
     const items = itemStore.getItems();
-    const resetItems: IItem[] = items.map((item) => ({
-      id: item.id,
-      value: item.value,
-      selected: false,
-      order: item.id,
-    }));
+    // Сбрасываем selected и устанавливаем order = id, затем сортируем по id
+    const resetItems: IItem[] = items
+      .slice()
+      .map((item) => ({
+        id: item.id,
+        value: item.value,
+        selected: false,
+        order: item.id,
+      }))
+      .sort((a, b) => a.id - b.id);
     itemStore.setItems(resetItems);
   }
 
