@@ -9,7 +9,7 @@ interface GetItemsParams {
   sortDir?: 'asc' | 'desc';
 }
 
-export class ItemService {
+class ItemService {
   getItems({ search, limit, offset, sortBy = 'order', sortDir = 'asc' }: GetItemsParams): {
     items: IItem[];
     total: number;
@@ -44,6 +44,12 @@ export class ItemService {
     };
   }
 
+  /**
+   * Обновляет флаг selected для списка элементов
+   * @param ids — массив ID элементов
+   * @param selected — новое значение флага
+   * @returns количество обновлённых элементов
+   */
   updateSelection(ids: number[], selected: boolean): number {
     const items = itemStore.getItems();
     let updatedCount = 0;
@@ -60,6 +66,11 @@ export class ItemService {
     return updatedCount;
   }
 
+  /**
+   * Обновляет порядок элементов по переданному массиву ID
+   * @param ids — новый упорядоченный список ID
+   * @returns количество элементов, у которых изменился order
+   */
   updateOrder(ids: number[]): number {
     const items = itemStore.getItems();
     const idSet = new Set(ids);
