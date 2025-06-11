@@ -52,3 +52,13 @@ export const updateOrder = (req: Request, res: Response, next: NextFunction): vo
     next(err);
   }
 };
+
+export const getState = (_req: Request, res: Response): void => {
+  const state = itemService.getState();
+  res.status(200).json(state);
+};
+
+export const resetState = (_req: Request, res: Response): void => {
+  itemService.resetState();
+  res.status(200).json({ reset: true });
+};

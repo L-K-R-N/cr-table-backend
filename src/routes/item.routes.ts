@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { getItems, updateOrder, updateSelection } from '../controllers/item.controller';
+import {
+  getItems,
+  getState,
+  resetState,
+  updateOrder,
+  updateSelection,
+} from '../controllers/item.controller';
 const { body } = require('express-validator');
 
 const router = Router();
@@ -24,5 +30,9 @@ router.patch(
   ],
   updateOrder
 );
+
+router.get('/state', getState);
+
+router.post('/state/reset', resetState);
 
 export default router;
