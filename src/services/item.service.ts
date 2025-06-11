@@ -68,6 +68,42 @@ class ItemService {
     itemStore.setItems(updated);
     return updatedCount;
   }
+
+  /**
+   * Обновляет порядок элементов по переданному массиву ID
+   * @param ids — новый упорядоченный список ID
+   * @returns количество элементов, у которых изменился order
+   */
+  updateOrder(ids: number[]): number {
+    const items = itemStore.getItems();
+    const idSet = new Set(ids);
+    let updatedCount = 0;
+
+    const itemsById = new Map(items.map((item) => [item.id, item]));
+
+    const reordered: typeof items = [];
+
+    ids.forEach((id, index) => {
+      const existing = itemsById.get(id);
+      if (existing) {
+        const newOrder = index + 1;
+        if (existing.order !== newOrder) {
+          updatedCount++;
+          reordered.push({ ...existing, order: newOrder });
+        } else {
+          reordered.push(existing);
+        }
+      }
+    });
+
+    items
+      .filter((item) => !idSet.has(item.id))
+      .sort((a, b) => a.order - b.order)
+      .forEach((item) => reordered.push(item));
+
+    itemStore.setItems(reordered);
+    return updatedCount;
+  }
 }
 
 export const itemService = new ItemService();

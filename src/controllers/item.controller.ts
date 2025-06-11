@@ -35,3 +35,20 @@ export const updateSelection = (req: Request, res: Response, next: NextFunction)
     next(err);
   }
 };
+
+export const updateOrder = (req: Request, res: Response, next: NextFunction): void => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ errors: errors.array() });
+    return;
+  }
+
+  const { ids } = req.body as { ids: number[] };
+
+  try {
+    const count = itemService.updateOrder(ids);
+    res.status(200).json({ updated: count });
+  } catch (err) {
+    next(err);
+  }
+};
