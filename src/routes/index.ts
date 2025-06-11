@@ -1,7 +1,8 @@
 import { Router } from 'express';
+import itemRoutes from './item.routes';
 
 const router = Router();
 
-// TODO: подключить маршруты
+router.use('/items', itemRoutes);
 
 export default router;
